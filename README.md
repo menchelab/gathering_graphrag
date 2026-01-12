@@ -51,6 +51,34 @@ pip install -r requirements.txt
 
 ```
 
+## Neo4j Aura Setup
+
+1. **Create Account**
+    * Navigate to the [Neo4j Aura Console](https://console.neo4j.io/).
+    * Click **Start for Free**.
+    * Select **Sign in with Google** and authenticate with your existing Google credentials.
+
+2. **Create Database Instance**
+    * Once logged in, click **New Instance**.
+    * Select the **Free** tier.
+    * Choose a region close to your location.
+    * Click **Create Instance**.
+
+3. **Retrieve Credentials**
+    * A modal will appear displaying your generated password. **Copy and save this password immediately**, as it is shown only once.
+    * Wait for the instance status to change to **Running**.
+    * Copy the **Connection URI** displayed on the dashboard (e.g., `neo4j+s://<db_id>.databases.neo4j.io`).
+
+4. **Configure Environment**
+    * Open the `.env` file in the root directory.
+    * Append the following variables, replacing the placeholders with your specific instance details:
+
+    ```bash
+    NEO4J_URI=<YOUR_CONNECTION_URI>
+    NEO4J_USERNAME=neo4j
+    NEO4J_PASSWORD=<YOUR_GENERATED_PASSWORD>
+    ```
+
 ## Setup Google GenAI API Key
 
 1. **Obtain API Key**
@@ -71,9 +99,9 @@ pip install -r requirements.txt
 
     > **Note:** Ensure `.env` is listed in your `.gitignore` file to prevent committing credentials to version control.
 
-3. Test the Key
+3. Test the setup
     * Test your setup by running:
 
     ```bash
-    python scripts/test_api_key.py
+    python scripts/test_api_keys.py
     ```
