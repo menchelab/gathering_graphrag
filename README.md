@@ -12,7 +12,7 @@ Limitations: RAG systems may still misinterpret retrieved content, for example b
 
 Technically, RAG systems consist of two main components: a retriever and a generator. Documents are first preprocessed by splitting them into chunks and converting each chunk into a vector embedding using an embedding model. These embeddings are stored in a vector database. At inference time, the user query is embedded in the same vector space and used to retrieve the most relevant document chunks via similarity search. The retrieved content is then appended to the prompt and passed to the large language model, which generates a response conditioned on both the query and the retrieved context.
 
-![RAG diagram](https://en.wikipedia.org/wiki/Retrieval-augmented_generation#/media/File:RAG_diagram.svg "Diagram")
+![RAG diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/RAG_diagram.svg/2560px-RAG_diagram.svg.png "Diagram")
 
 *Image source: Wikimedia Commons, CC BY-SA 4.0*
 
