@@ -1,7 +1,9 @@
 [project]
 name = "gathering-graphrag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Tutorial for graph RAGs"
+authors = [{name = "Ariadna Villanueva", email = "avillanueva@cemm.at"},
+            {name = "Simon Schindler", email="simon@lbi-netmed.com"}]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

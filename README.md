@@ -1,3 +1,61 @@
+# GraphRAGs gathering
+
+Authors: Simon Schindler, Ariadna Villanueva
+
+## Introduction
+
+**RAGs**
+
+Large language models (LLMs) achieve strong performance across many tasks by encoding knowledge in their parameters, but they often fail when required information lies outside their training data or is outdated. Retrieval-augmented generation (RAG) was developed to address this limitation by combining LLMs with external knowledge sources. In a RAG framework, relevant documents are retrieved from a database and provided to the model at inference time, grounding the generated output in explicit evidence. This approach improves task performance, enables access to up-to-date information, and reduces hallucinations.
+
+Limitations: RAG systems may still misinterpret retrieved content, for example by extracting statements with missing context. When sources provide conflicting or temporally inconsistent information, the model may struggle to assess reliability, potentially producing responses that blend outdated and current facts in a misleading way.
+
+Technically, RAG systems consist of two main components: a retriever and a generator. Documents are first preprocessed by splitting them into chunks and converting each chunk into a vector embedding using an embedding model. These embeddings are stored in a vector database. At inference time, the user query is embedded in the same vector space and used to retrieve the most relevant document chunks via similarity search. The retrieved content is then appended to the prompt and passed to the large language model, which generates a response conditioned on both the query and the retrieved context.
+
+![RAG diagram](https://en.wikipedia.org/wiki/Retrieval-augmented_generation#/media/File:RAG_diagram.svg "Diagram")
+
+*Image source: Wikimedia Commons, CC BY-SA 4.0*
+
+**Related sources:**
+
+1. https://research.ibm.com/blog/retrieval-augmented-generation-RAG
+2. Lewis, P., et al. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. In Proceedings of the 34th International Conference on Neural Information Processing Systems. Curran Associates Inc.
+
+
+
+
+## Organization
+
+We will first go through the tutorial, that we have divided into two notebooks:
+- Knowledge graphs: 01_knowledge_graph_construction.ipynb
+- RAGs: 02_graph_retrieval_augmented_generation.ipynb
+
+**Challenges:**
+
+You can select any of these challenges ordered by increasing level of difficulty.
+
+1. Create a knowledge graph for another disease of your choice
+2. Create your own knowledge database for papers relevant to your project
+3. Navigate the Human reference atlas Knowledge Graph: https://docs.humanatlas.io/dev/kg#accessing-the-hra-kg
+4. Create a network on genes based on common pathways
+5. Make up your own challenge
+
+**Tasks:**
+
+0. Fork this repo if you want to show your solution (optional)
+1. Set up the environment
+2. Set up the Gemini API keys. If you have a OpenAI API you can also use it.
+3. Go through the notebooks
+4. Do one of the challenge
+5. Share your solution ()
+
+
+
+**Outcomes:**
+
+- Learn about graphRAGs
+
+
 ## Environment Setup
 
 Ensure you are in the root directory of the repository (`gathering_graphrag`) before running the following commands.
@@ -105,3 +163,12 @@ pip install -r requirements.txt
     ```bash
     python scripts/test_api_keys.py
     ```
+
+## Sources
+- Tutorial from Neo4j: https://neo4j.com/blog/news/graphrag-python-package/
+- Hugging face tutorial: https://huggingface.co/learn/cookbook/rag_with_knowledge_graphs_neo4j
+
+
+## Additional interesting pages:
+
+- If you want to run your AuraDB locally with docker: https://blog.greenflux.us/building-a-knowledge-graph-locally-with-neo4j-and-ollama/
