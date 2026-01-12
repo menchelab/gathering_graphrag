@@ -1,3 +1,56 @@
+## Environment Setup
+
+Ensure you are in the root directory of the repository (`gathering_graphrag`) before running the following commands.
+
+### Option 1: Using `uv` (Recommended)
+
+This project utilizes `uv` for dependency management, ensuring reproducible environments via `uv.lock`.
+
+```bash
+# Install uv if not already installed
+curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
+
+# Sync dependencies and create the virtual environment
+uv sync
+
+# Activate the environment
+source .venv/bin/activate
+
+```
+
+### Option 2: Using `conda`
+
+If you prefer Conda, create an environment and install dependencies using `requirements.txt`.
+
+```bash
+# Create and activate a new environment
+conda create -n gathering_graphrag python=3.10
+conda activate gathering_graphrag
+
+# Install dependencies
+pip install -r requirements.txt
+
+```
+
+### Option 3: Using `venv`
+
+Standard Python virtual environment setup using `requirements.txt`.
+
+```bash
+# Create the virtual environment
+python -m venv .venv
+
+# Activate the environment
+# On macOS/Linux:
+source .venv/bin/activate
+# On Windows:
+# .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+```
+
 ## Setup Google GenAI API Key
 
 1. **Obtain API Key**
