@@ -1,4 +1,16 @@
 # --- imports (all at top) ---
+"""
+Basic example of building a knowledge graph from scientific papers in PDF format,
+using a rich schema with multiple node and relationship types, and extracting
+information via a custom prompt template.
+
+To run:
+1) Ensure you have a Neo4j instance running (locally or in the cloud).
+2) Create a .env file with your Neo4j connection details (see .env.template).
+3) Place some scientific papers in PDF format in the "papers" folder.
+4) Run this script (e.g. `python solutions/base_code.py`).
+
+"""
 import os
 from pathlib import Path
 import neo4j
@@ -8,11 +20,13 @@ from PyPDF2 import PdfWriter, PdfReader
 from neo4j_graphrag.llm import OpenAILLM
 from neo4j_graphrag.embeddings.openai import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
-from neo4j_graphrag.experimental.components.text_splitters.fixed_size_splitter import FixedSizeSplitter
+from neo4j_graphrag.experimental.components.text_splitters.fixed_size_splitter import (
+    FixedSizeSplitter,
+)
 from neo4j_graphrag.indexes import create_vector_index
 
 # --- config/constants (defined early, in order) ---
-INPUT_FOLDER = "papers"
+INPUT_FOLDER = "papers"  # change to your paper's folder
 PDF_FOLDER = "processed_papers"
 
 os.makedirs(PDF_FOLDER, exist_ok=True)
@@ -148,9 +162,7 @@ NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 
 # --- graph/llm components (in dependency order) ---
-driver = neo4j.GraphDatabase.driver(
-    NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
-)
+driver = neo4j.GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD))
 
 
 llm = OpenAILLM(
@@ -159,7 +171,6 @@ llm = OpenAILLM(
 )
 
 embedder = OpenAIEmbeddings()
-
 
 
 kg_builder_pdf = SimpleKGPipeline(
@@ -172,7 +183,7 @@ kg_builder_pdf = SimpleKGPipeline(
         "relationship_types": RELATIONSHIP_TYPES,
     },
     prompt_template=prompt_template,
-    from_pdf=True, 
+    from_pdf=True,
 )
 
 pdf_file_paths = list(Path(PDF_FOLDER).glob("*.pdf"))
@@ -213,7 +224,9 @@ with driver.session() as session:
         RETURN chunks, chunks_with_emb, papers, papers_with_chunks
         """
     ).single()
-    print(f"Chunks={stats['chunks']}, withEmbedding={stats['chunks_with_emb']}, Papers={stats['papers']}, PapersWithChunks={stats['papers_with_chunks']}")
+    print(
+        f"Chunks={stats['chunks']}, withEmbedding={stats['chunks_with_emb']}, Papers={stats['papers']}, PapersWithChunks={stats['papers_with_chunks']}"
+    )
 
 with driver.session() as session:
     res = session.run(
@@ -244,12 +257,12 @@ with driver.session() as session:
 
 with driver.session() as session:
     rows = session.run(
-                """
+        """
                 MATCH ()-[r]->()
                 RETURN DISTINCT type(r) AS relationshipType
                 ORDER BY relationshipType
                 """
-            ).data()
+    ).data()
 
 
 ## --- Retrieval of information
@@ -273,16 +286,17 @@ WITH collect(DISTINCT chunk) AS chunks,
 //3) format and return context
 RETURN '=== text ===\n' + apoc.text.join([c in chunks | c.text], '\n---\n') + '\n\n=== kg_rels ===\n' +
   apoc.text.join([r in rels | startNode(r).name + ' - ' + type(r) + '(' + coalesce(r.details, '') + ')' +  ' -> ' + endNode(r).name ], '\n---\n') AS info
-"""
+""",
 )
 
 from neo4j_graphrag.llm import OpenAILLM as LLM
 from neo4j_graphrag.generation import RagTemplate
 from neo4j_graphrag.generation.graphrag import GraphRAG
 
-llm = LLM(model_name="gpt-4o",  model_params={"temperature": 0.0})
+llm = LLM(model_name="gpt-4o", model_params={"temperature": 0.0})
 
-rag_template = RagTemplate(template='''Answer the Question using the following Context. Only respond with information mentioned in the Context. Do not inject any speculative information not mentioned. 
+rag_template = RagTemplate(
+    template="""Answer the Question using the following Context. Only respond with information mentioned in the Context. Do not inject any speculative information not mentioned. 
 
 # Question:
 {query_text}
@@ -291,42 +305,45 @@ rag_template = RagTemplate(template='''Answer the Question using the following C
 {context}
 
 # Answer:
-''', expected_inputs=['query_text', 'context'])
+""",
+    expected_inputs=["query_text", "context"],
+)
 
 vc_rag = GraphRAG(llm=llm, retriever=vc_retriever, prompt_template=rag_template)
 
 q = "Which papers mention Conterfactual learning and who are their authors?"
-print(f"Vector + Cypher Response: \n{vc_rag.search(q, retriever_config={'top_k':5}).answer}")
+print(
+    f"Vector + Cypher Response: \n{vc_rag.search(q, retriever_config={'top_k':5}).answer}"
+)
+
 
 def split_pdf(file, output_folder):
     """Extract the first two pages from a PDF and save to output folder."""
-    
+
     with open(file, "rb") as pdf_file:
         input_pdf = PdfReader(pdf_file)
-        
+
         # Check if PDF has at least one page
         if len(input_pdf.pages) == 0:
             print(f"Warning: {file} has no pages")
             return
-        
+
         output = PdfWriter()
-        
+
         # Add first page
         output.add_page(input_pdf.pages[0])
-        
+
         # Add second page if it exists
         if len(input_pdf.pages) > 1:
             output.add_page(input_pdf.pages[1])
-        
+
         output_path = Path(output_folder) / file.name
         with open(output_path, "wb") as output_stream:
             output.write(output_stream)
-                
-    
+
 
 # --- process PDFs ---
 
 for pdf_file in Path(INPUT_FOLDER).glob("*.pdf"):
     print(f"Splitting PDF: {pdf_file}")
     split_pdf(pdf_file, PDF_FOLDER)
-
