@@ -7,12 +7,16 @@ authors = [{name = "Ariadna Villanueva", email = "avillanueva@cemm.at"},
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fsspec>=2026.1.0",
+    "fsspec>=2024.9.0,<2025.0.0",
     "google-genai>=1.57.0",
+    "ipykernel>=7.1.0",
     "langchain-text-splitters>=1.1.0",
-    "neo4j-graphrag>=1.4.0",
+    "neo4j-graphrag>=1.12.0",
     "numpy>=2.4.1",
+    "openai>=2.15.0",
+    "pypdf2>=3.0.1",
     "python-dotenv>=1.2.1",
     "tiktoken>=0.12.0",
     "torch>=2.9.1",
+    "tqdm>=4.67.1",
 ]

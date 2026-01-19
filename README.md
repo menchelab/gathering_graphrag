@@ -46,9 +46,8 @@ You can select any of these challenges ordered by increasing level of difficulty
 1. Set up the environment
 2. Set up the Gemini API keys. If you have a OpenAI API you can also use it.
 3. Go through the notebooks
-4. Do one of the challenge
-5. Share your solution ()
-
+4. Do one of the challenges
+5. Share your solution (optional)
 
 
 **Outcomes:**
@@ -136,6 +135,23 @@ pip install -r requirements.txt
     NEO4J_USERNAME=neo4j
     NEO4J_PASSWORD=<YOUR_GENERATED_PASSWORD>
     ```
+### Exploring your graph in AuraDB
+
+You can explore the graph you created by using the AuraDB console.
+
+Once you have created the graph, go to the Explore page in Tools (left panel). Here you can connect to the free instance you created.
+
+There are two types of graphs created:
+1. The semantic graph where the relationships between entities are derived from the input documents 
+2. A chunk–embedding graph used for RAG and similarity search
+
+You may only be able to see the chunk-embedding graph. You can remove these nodes by using cypher syntax. Go to Query in the left panel and then use the following to remove them:
+
+```{cypher}
+MATCH (n:__KGBuilder__)
+REMOVE n:__KGBuilder__;
+```
+
 
 ## Setup Google GenAI API Key
 
@@ -163,6 +179,8 @@ pip install -r requirements.txt
     ```bash
     python scripts/test_api_keys.py
     ```
+
+
 
 ## Sources
 - Tutorial from Neo4j: https://neo4j.com/blog/news/graphrag-python-package/
